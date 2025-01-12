@@ -10,13 +10,12 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
-import org.springframework.util.StringUtils
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class JwtAuthorizationFilter(
     private val userDetailsService: UserDetailsService,
-    private val jwtTokenUtil: JwtTokenUtils
+    private val jwtTokenUtils: JwtTokenUtils
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -29,13 +28,14 @@ class JwtAuthorizationFilter(
         if (null != authorizationHeader && authorizationHeader.startsWith("Bearer ")) {
             try {
                 val token: String = authorizationHeader.substringAfter("Bearer ")
-                val username: String = jwtTokenUtil.getEmailFromToken(token) ?: ""
+                val userId = jwtTokenUtils.getUserId(token)
 
-
+                println(SecurityContextHolder.getContext().authentication)
                 if (SecurityContextHolder.getContext().authentication == null) {
-                    val userDetails: UserDetails = userDetailsService.loadUserByUsername(username)
 
-                    if (username == userDetails.username) {
+                    val userDetails: UserDetails = userDetailsService.loadUserByUsername(token)
+
+                    if (userId == userDetails.username) {
                         val authToken = UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.authorities
                         )
@@ -45,7 +45,7 @@ class JwtAuthorizationFilter(
                 }
             } catch (ex: Exception) {
                 response.writer.write(
-                    "Invalid Token. Please provide a valid token."
+                    ex.message ?: "Invalid Token. Please provide a valid token."
                 )
             }
         }

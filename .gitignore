@@ -35,6 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+.env
+course-service.env
 
 ### Kotlin ###
 .kotlin
