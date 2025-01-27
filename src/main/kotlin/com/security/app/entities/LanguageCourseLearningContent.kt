@@ -29,9 +29,32 @@ class LanguageCourseLearningContent {
     @JsonIgnore
     var languageCourse: LanguageCourse? = null
 
+    @ManyToOne
+    @JoinColumn(name = "categoryCourseId", referencedColumnName = "categoryCourseId")
+    @JsonIgnore
+    var categoryCourse: CategoryCourse? = null
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     var learningContentType: LearningContentType = LearningContentType.WORD
+
+    @Column(nullable = true)
+    var vietnameseTitle: String? = null
+
+    @Column(nullable = true)
+    var englishTitle: String? = null
+
+    @Column(nullable = true)
+    var frenchTitle: String? = null
+
+    @Column(nullable = true)
+    var vietnameseDescription: String? = null
+
+    @Column(nullable = true)
+    var englishDescription: String? = null
+
+    @Column(nullable = true)
+    var frenchDescription: String? = null
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

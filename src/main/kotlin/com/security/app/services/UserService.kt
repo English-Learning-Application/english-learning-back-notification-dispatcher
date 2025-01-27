@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient
 class UserService(
     private val webClient: WebClient,
 ) {
-    private val PROFILE_SERVICE_URL = System.getenv("PROFILE_SERVICE_URL")
+    private final val PROFILE_SERVICE_URL = System.getenv("PROFILE_SERVICE_URL")
     fun getUserInformation(tokenString: String): UserModel? {
         webClient.get()
             .uri("$PROFILE_SERVICE_URL/me")

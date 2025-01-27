@@ -37,6 +37,9 @@ class CategoryCourse {
     @Column(nullable = false)
     val frenchName: String = ""
 
+    @OneToMany(mappedBy = "categoryCourse", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var languageCourseLearningContent: List<LanguageCourseLearningContent> = mutableListOf()
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()

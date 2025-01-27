@@ -24,6 +24,9 @@ class Category {
     lateinit var categoryId: UUID
 
     @Column(nullable = false)
+    val categoryKey: String = ""
+
+    @Column(nullable = false)
     val englishName: String = ""
 
     @Column(nullable = false)
