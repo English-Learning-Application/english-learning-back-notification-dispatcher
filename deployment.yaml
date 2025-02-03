@@ -21,6 +21,16 @@ spec:
           ports:
             - containerPort: 8085
           env:
+            - name: APP_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: APP_PORT
+            - name: NOTIFICATION_SERVICE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: NOTIFICATION_SERVICE_URL
             - name: MODE
               valueFrom:
                 secretKeyRef:

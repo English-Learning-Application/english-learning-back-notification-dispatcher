@@ -114,3 +114,20 @@ enum class WordType(val value: String) {
         }
     }
 }
+
+enum class NotificationStatus(val value: String) {
+    PENDING("PENDING"),
+    SENT("SENT"),
+    FAILED("FAILED");
+
+    companion object {
+        fun fromString(value: String): NotificationStatus {
+            return when (value) {
+                "PENDING" -> PENDING
+                "SENT" -> SENT
+                "FAILED" -> FAILED
+                else -> throw IllegalArgumentException("Notification status not found")
+            }
+        }
+    }
+}

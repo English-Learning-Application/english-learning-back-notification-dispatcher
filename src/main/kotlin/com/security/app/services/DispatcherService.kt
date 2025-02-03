@@ -41,13 +41,20 @@ class DispatcherService(
 
             when (messageChannel) {
                 "fcm" -> {
-//                    fcmService.sendNotification(messageBody)
+                    fcmService.sendNotificationToToken(
+                        messageBody["fcmToken"] as String,
+                        messageBody["title"] as String,
+                        messageBody["body"] as String,
+                        jsonUtils.fromJson(messageBody["action"] as String, Map::class.java) as Map<String, String>,
+                        messageBody["notificationId"] as String
+                    )
                 }
 
                 "sms" -> {
                     smsService.sendSms(
                         messageBody["toNumber"] as String,
-                        messageBody["message"] as String
+                        messageBody["message"] as String,
+                        messageBody["notificationId"] as String
                     )
                 }
 
@@ -55,7 +62,8 @@ class DispatcherService(
                     mailService.sendEmail(
                         messageBody["toEmail"] as String,
                         messageBody["subject"] as String,
-                        messageBody["body"] as String
+                        messageBody["body"] as String,
+                        messageBody["notificationId"] as String
                     )
                 }
             }

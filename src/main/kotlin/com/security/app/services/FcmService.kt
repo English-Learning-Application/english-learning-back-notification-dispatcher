@@ -2,20 +2,24 @@ package com.security.app.services
 
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
+import com.security.app.model.NotificationStatus
 import org.springframework.stereotype.Service
 
 @Service
-class FcmService {
+class FcmService(
+    private val callbackService: CallbackService,
+) {
     fun sendNotificationToToken(
         token: String,
         title: String,
         message: String,
-        data: Map<String, String>
+        action: Map<String, String>,
+        notificationId: String
     ): String {
         try {
             val messageModel = Message.builder()
                 .setToken(token)
-                .putAllData(data)
+                .putAllData(action)
                 .setNotification(
                     com.google.firebase.messaging.Notification.builder()
                         .setTitle(title)
@@ -24,9 +28,22 @@ class FcmService {
                 )
                 .build()
 
+            callbackService.sendCallbackNotification(
+                notificationId,
+                "fcm",
+                NotificationStatus.SENT,
+                token
+            )
             return FirebaseMessaging.getInstance().send(messageModel)
         } catch (e: Exception) {
-            throw Exception("Error sending notification to token: $token")
+            callbackService.sendCallbackNotification(
+                notificationId,
+                "fcm",
+                NotificationStatus.FAILED,
+                token
+            )
+            e.printStackTrace()
+            return e.message.toString()
         }
     }
 }
