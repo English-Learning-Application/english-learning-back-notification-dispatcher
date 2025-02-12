@@ -27,7 +27,7 @@ class CallbackService(
                 )
             )
             .retrieve()
-            .bodyToMono(Message::class.java)
+            .bodyToMono(Message.Success::class.java)
             .subscribe()
     }
 }

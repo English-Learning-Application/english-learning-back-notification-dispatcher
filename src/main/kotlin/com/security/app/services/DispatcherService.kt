@@ -36,9 +36,6 @@ class DispatcherService(
             val messageBody = jsonUtils.fromJson(messageBodyJson, Map::class.java)
             val messageChannel = attributes["channel"]?.stringValue()
 
-            println("Message received: $messageBody")
-            println("Message channel: $messageChannel")
-
             when (messageChannel) {
                 "fcm" -> {
                     fcmService.sendNotificationToToken(
