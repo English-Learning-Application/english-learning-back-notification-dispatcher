@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dispatcher-service-deployment
+  labels:
+    app: dispatcher-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dispatcher-service
+  template:
+    metadata:
+      labels:
+        app: dispatcher-service
+    spec:
+      containers:
+        - name: dispatcher-service-container
+          imagePullPolicy: Never
+          image: "notification-dispatcher-microservice:latest"
+          ports:
+            - containerPort: 8085
+          env:
+            - name: APP_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: APP_PORT
+            - name: NOTIFICATION_SERVICE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: NOTIFICATION_SERVICE_URL
+            - name: MODE
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: MODE
+            - name: SQS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: SQS_URL
+            - name: AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: AWS_ACCESS_KEY
+            - name: AWS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: AWS_SECRET_KEY
+            - name: AWS_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: AWS_REGION
+            - name: MAIL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: MAIL_HOST
+            - name: MAIL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: MAIL_PORT
+            - name: MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: MAIL_USERNAME
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: MAIL_PASSWORD
+            - name: TWILIO_ACCOUNT_SID
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: TWILIO_ACCOUNT_SID
+            - name: TWILIO_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: TWILIO_AUTH_TOKEN
+            - name: FIREBASE_SERVICE_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: FIREBASE_SERVICE_ACCOUNT
+            - name: TWILIO_PHONE_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: TWILIO_PHONE_NUMBER
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: DB_HOST
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: DB_NAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: DB_PASSWORD
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: DB_USER
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: dispatcher-service-secret
+                  key: DB_PORT
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "512m"
+            limits:
+              memory: "512Mi"
+              cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dispatcher-cluster-ip-service
+spec:
+  selector:
+    app: dispatcher-service
+  ports:
+    - protocol: TCP
+      port: 8085
+      targetPort: 8085
+  type: LoadBalancer
